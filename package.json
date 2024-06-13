@@ -1,0 +1,17 @@
+{
+  "name": "consume-github-api",
+  "version": "1.0.0",
+  "description": "Consume Github API (186) For raw project instructions see: http://syllabus.africacode.net/projects/github-api-consume/part1/",
+  "main": "src/consume_github_api.js",
+  "scripts": {
+    "start": "node src/consume_github_api.js",
+    "test": "jasmine spec/consume_github_api_spec.js"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "jasmine": "^4.6.0"
+  }
+}
