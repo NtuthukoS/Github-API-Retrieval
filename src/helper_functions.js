@@ -17,16 +17,6 @@ async function validateDateFormat(dateString) {
   });
 }
 
-async function validateOwnerAndRepo(owner, repo) {
-  return new Promise((resolve, reject) => {
-    if (!owner || !repo) {
-      reject(new Error(errorMessages.emptyOwnerOrRepo));
-    } else {
-      resolve();
-    }
-  });
-}
-
 async function validateDateRange(startDate, endDate) {
   await validateDateFormat(startDate);
   await validateDateFormat(endDate);
@@ -146,7 +136,6 @@ async function filterAndFormatPullRequests(pullRequests, startDate, endDate) {
 
 module.exports = {
   validateDateFormat,
-  validateOwnerAndRepo,
   validateDateRange,
   verifyUser,
   verifyRepository,
