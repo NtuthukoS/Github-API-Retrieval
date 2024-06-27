@@ -2,7 +2,6 @@ const {
   verifyUser,
   verifyRepository,
   fetchPullRequests,
-  validateOwnerAndRepo,
   validateDateRange,
   handleRequestError,
   filterAndFormatPullRequests,
@@ -11,7 +10,6 @@ const { token } = require("./github_token");
 
 async function getPullRequests({ owner, repo, startDate, endDate }) {
   try {
-    await validateOwnerAndRepo(owner, repo);
     await validateDateRange(startDate, endDate);
     await verifyUser(owner, token);
     await verifyRepository(owner, repo, token);
