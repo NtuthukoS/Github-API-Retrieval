@@ -1,6 +1,12 @@
 const { getPullRequests } = require("../src/consume_github_api");
-const { githubApiUrls } = require("../src/helper_objects");
-const { formattedData, unformattedData } = require("./mock_pull_requests.js");
+const { githubApiUrls,errorMessages } = require("../src/helper_objects");
+const {
+  formattedData,
+  unformattedData,
+  ownerNotFoundError,
+  repoNotFoundError,
+  errorResponse
+} = require("./mock_pull_requests.js");
 const axios = require("axios");
 require("dotenv").config();
 
@@ -23,6 +29,7 @@ describe("getPullRequests()", () => {
           status: 200,
           data: unformattedData,
           headers: {
+            Authorization: `Bearer ${dummyToken}`,
             link: '<https://api.github.com/resource?page=2>; rel=next',
           },
         });
@@ -44,9 +51,6 @@ describe("getPullRequests()", () => {
     pullRequestsCalls.forEach(call => {
       const [url, config] = call.args;
       const expectedUrl = githubApiUrls.pullRequests(pullRequest.owner, pullRequest.repo);
-      console.log('URL:', url);
-      console.log('Expected URL:', expectedUrl);
-      console.log('Config:', config);
       expect(url).toEqual(expectedUrl);
       expect(config.params).toEqual({
         state: 'all',
@@ -55,7 +59,6 @@ describe("getPullRequests()", () => {
       });
       expect(config.headers).toEqual({
         Accept: "application/vnd.github.v3+json",
-      
       });
     });
   });
@@ -63,4 +66,50 @@ describe("getPullRequests()", () => {
   it("should return the pull requests within the given range in the correct format.", () => {
     expect(result[0]).toEqual(formattedData[0]);
   });
+
+
+  it("should throw an error for a non-existing repository", async () => {
+    axios.get.and.callFake((url, config) => {
+      if (url.includes("repos")) {
+        return Promise.reject(repoNotFoundError);
+      }
+      return Promise.resolve({ status: 200 });
+    });
+
+    try {
+      await getPullRequests({
+        owner: "Umuzi-org",
+        repo: "non-existent-repo",
+        startDate: "2024-02-03",
+        endDate: "2024-02-04",
+      });
+    } catch (error) {
+      expect(error.message).toBe(
+        errorMessages.repoNotFound("Umuzi-org", "non-existent-repo")
+      );
+    }
+  });
+
+  it("should throw an error for a non-existing owner", async () => {
+    axios.get.and.callFake((url, config) => {
+      if (url.includes("users")) {
+        return Promise.reject(ownerNotFoundError);
+      }
+      return Promise.resolve({ status: 200 });
+    });
+
+    try {
+      await getPullRequests({
+        owner: "non-existent-owner",
+        repo: "ACN-syllabus",
+        startDate: "2024-02-03",
+        endDate: "2024-02-04",
+      });
+    } catch (error) {
+      expect(error.message).toBe(
+        errorMessages.ownerNotFound("non-existent-owner")
+      );
+    }
+  });
+
 });
