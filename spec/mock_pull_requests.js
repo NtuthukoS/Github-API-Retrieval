@@ -1,3 +1,5 @@
+const { errorMessages } = require("../src/helper_objects");
+
 const unformattedData = [
   {
     id: 1,
@@ -21,4 +23,31 @@ const formattedData = [
   },
 ];
 
-module.exports = { unformattedData, formattedData };
+const errorResponse = {
+  response: {
+    status: 404,
+    data: {
+      message: "Not Found",
+    },
+  },
+};
+
+const ownerNotFoundError = {
+  response: {
+    status: 404,
+    data: {
+      message: errorMessages.ownerNotFound("Umuzi-org"),
+    },
+  },
+};
+
+const repoNotFoundError = {
+  response: {
+    status: 404,
+    data: {
+      message: errorMessages.repoNotFound("Umuzi-org", "non-existent-repo"),
+    },
+  },
+};
+
+module.exports = { unformattedData, formattedData, errorResponse, ownerNotFoundError, repoNotFoundError };
