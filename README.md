@@ -1,2 +1,1 @@
-Consume Github API (186)
-For raw project instructions see: http://syllabus.africacode.net/projects/github-api-consume/part1/
+A dynamic and robust data retrieval solution leveraging GitHub's API and JavaScript. The project fetches pull requests based on the owner, repository name, and a user-specified date range. Large datasets are navigated effectively through pagination for optimal performance, and data integrity is ensured through token-based authentication. Testing is conducted using the Jasmine framework.
